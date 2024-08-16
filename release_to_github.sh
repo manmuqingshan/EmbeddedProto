@@ -32,27 +32,41 @@
 
 
 if [ $# -eq 0 ]; then
-  echo "Please provice version number: \"./release_to_github.sh X.Y.Z\""
+  echo "Please provide a version number: \"./release_to_github.sh X.Y.Z\""
 else
-  git fetch --prune
-  
-  git checkout develop
-  git pull
-  git push github develop
 
-  git checkout master
-  git pull
-  git push github master
+  echo 'When updating the protobuf version did you: '
+  echo '  1. Update the pyproject.toml file?'
+  echo '  2. Update the version in the README installation section?'
+  echo '  3. Update the release notes?'
+  read answer
 
-  git tag -d latest
-  git push --delete origin latest
-  git push --delete github latest
+  if [ "$answer" != "${answer#[Yy]}" ] ;then   
 
-  git tag latest
-  git push origin latest
-  git push github latest
+    git fetch --prune
+    
+    git checkout develop
+    git pull
+    git push github develop
 
-  git tag "$1"
-  git push origin "$1"
-  git push github "$1"
+    git checkout master
+    git pull
+    git push github master
+
+    git tag -d latest
+    git push --delete origin latest
+    git push --delete github latest
+
+    git tag latest
+    git push origin latest
+    git push github latest
+
+    git tag "$1"
+    git push origin "$1"
+    git push github "$1"
+
+  else
+    echo "Aborting"
+  fi
+
 fi
