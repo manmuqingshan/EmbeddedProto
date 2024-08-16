@@ -112,26 +112,26 @@ def check_protoc_version(arguments):
         text = "\n"
         text += "The version of Protoc (v{0}.{1})".format(installed_version_minor,
                                                           installed_version_patch)
-        text += " you have installed is not the same as the version of\nthe protobuf python package " \
-                "(v{0}.{1}).".format(required_version.group('minor'), required_version.group('patch'))
+        text += " you installed is different from the Protobuf Python\npackage version" \
+                "(v{0}.{1}). ".format(required_version.group('minor'), required_version.group('patch'))
         text += "These are your options:\n" \
-                "\t1. Install a matching version of Protoc.\n" \
-                "\t2. Change the version of Embedded Proto.\n"
+                "\t1. Manually install a matching version of Protoc.\n" \
+                "\t2. Manually change the version of Embedded Proto.\n"
 
         # Check if all versions are above v21.0
         if ((21 <= int(installed_version_minor)) and (21 <= int(required_version.group('minor')))) or \
                 ((21 > int(installed_version_minor)) and (21 > int(required_version.group('minor')))):
 
             print(" [" + CYELLOW + "Caution" + CEND + "]")
-            text += ("\t3. Ignore the difference and try if it works for you (please let us know if it does not stating"
-                     " the versions you used).\n")
+            text += "\t3. Ignore the difference and try if it works for you (please let us know\n" \
+                    "\t   if it does not stating the versions you used).\n"
             print(text)
             if arguments.ignore_version_diff:
                 # Continue the setup
                 print("Automatically ignoring the difference.")
             else:
                 while True:
-                    user_input = input("Ignore the difference [Y/n]: ")
+                    user_input = input("Would you like to try option 3? [Y/n]: ")
                     if ('Y' == user_input) or ('y' == user_input):
                         # Continue the setup
                         print("Ignoring the difference.")
