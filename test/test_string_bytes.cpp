@@ -785,6 +785,8 @@ TEST(RepeatedStringBytes, deserialize)
   EXPECT_STREQ(msg.array_of_txt(2).get_const(), "Foo bar 3"); 
 }
 
+#ifndef DISABLE_FIELD_NUMBER_TO_NAME 
+
 TEST(RepeatedStringBytes, field_number_to_name)
 {
   using RSB = repeated_string_bytes<3, 15, 3, 15, 3, 3>;
@@ -796,6 +798,8 @@ TEST(RepeatedStringBytes, field_number_to_name)
   EXPECT_TRUE(0 == strcmp(RSB::field_number_to_name(RSB::FieldNumber::NESTED_BYTES),
                           "nested_bytes"));
 }
+
+#endif
 
 #ifdef MSG_TO_STRING
 
