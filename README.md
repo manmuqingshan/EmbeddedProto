@@ -92,7 +92,7 @@ You can request more information about a commercial license on our [website](htt
 What is required to be able to generate source files based on .proto files:
 1. Python 3.8 and up
 2. Pip
-3. Protobuf v21.5 and up (tested with v26.1)
+3. Protobuf v21.5 and up (tested with v27.1)
 4. Git
 
 After installing the requirements, continue by cloning the Embedded Proto repo. We advised using Embedded Proto as a submodule in your project. This way, you can track the version of Embedded Proto with the version of your project.

@@ -246,6 +246,8 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
 
     }
 
+#ifndef DISABLE_FIELD_NUMBER_TO_NAME 
+
     static char const* field_number_to_name(const FieldNumber fieldNumber)
     {
       char const* name = nullptr;
@@ -269,6 +271,8 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
       }
       return name;
     }
+
+#endif
 
 #ifdef MSG_TO_STRING
 
