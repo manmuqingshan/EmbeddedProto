@@ -853,4 +853,62 @@ TEST(RepeatedStringBytes, to_string)
 
 #endif // MSG_TO_STRING
 
+TEST(RepeatedStringWithLengths, test_both_lengths) {
+  repeated_string_with_lengths msg;
+
+  // The array should have exactly 3 elements
+  ASSERT_EQ(3, msg.array_of_txt().get_max_length());
+
+  // Each string should have a max length of 10
+  msg.mutable_array_of_txt(0) = "1234567890";
+  ASSERT_EQ(10, msg.array_of_txt(0).get_max_length());
+  ASSERT_STREQ("1234567890", msg.array_of_txt(0).get_const());
+
+  // Try to set a string longer than 10 characters - should be truncated
+  msg.mutable_array_of_txt(1) = "1234567890123";
+  ASSERT_EQ(10, msg.array_of_txt(1).get_length());
+  ASSERT_STREQ("1234567890", msg.array_of_txt(1).get_const());
+
+  EXPECT_EQ(3, msg.array_of_txt().get_max_length());
+  EXPECT_EQ(10, msg.array_of_txt(0).get_max_length());
+}
+
+TEST(RepeatedBytesWithLengths, test_both_lengths) {
+  repeated_bytes_with_lengths msg;
+
+  // The array should have exactly 3 elements
+  ASSERT_EQ(3, msg.array_of_bytes().get_max_length());
+
+  // Each bytes field should have a max length of 10
+  uint8_t data[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  msg.mutable_array_of_bytes(0).set(data, 10);
+  ASSERT_EQ(10, msg.array_of_bytes(0).get_max_length());
+  for (int i = 0; i < 10; ++i) {
+    ASSERT_EQ(i, msg.array_of_bytes(0)[i]);
+  }
+
+  // Try to set more bytes than the max length - should be truncated
+  uint8_t big_data[15] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+  EXPECT_EQ(::EmbeddedProto::Error::ARRAY_FULL, msg.mutable_array_of_bytes(1).set(big_data, 15));
+  ASSERT_EQ(0, msg.array_of_bytes(1).get_length());
+
+  // Try to set data within the max length - should work
+  uint8_t small_data[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  EXPECT_EQ(::EmbeddedProto::Error::NO_ERRORS, msg.mutable_array_of_bytes(1).set(small_data, 10));
+  ASSERT_EQ(10, msg.array_of_bytes(1).get_length());
+  for (int i = 0; i < 10; ++i) {
+    ASSERT_EQ(i, msg.array_of_bytes(1)[i]);
+  }
+
+  // Clear the array first before setting data
+  msg.clear_array_of_bytes();
+  EXPECT_EQ(::EmbeddedProto::Error::NO_ERRORS, msg.mutable_array_of_bytes(1).set(small_data, 10));
+  ASSERT_EQ(10, msg.array_of_bytes(1).get_length());
+  for (int i = 0; i < 10; ++i) {
+    ASSERT_EQ(i, msg.array_of_bytes(1)[i]);
+  }
+  EXPECT_EQ(3, msg.array_of_bytes().get_max_length());
+  EXPECT_EQ(10, msg.array_of_bytes(0).get_max_length());
+}
+
 } // End of namespace test_EmbeddedAMS_string_bytes
