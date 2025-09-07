@@ -256,24 +256,24 @@ class BaseStringBytes(Field):
 
         # Find options we know and use in this type of field.
         self.MaxLength = None
-        self.NestedMaxLength = None
-        self.effective_max_length = None
 
         if self.descriptor.options.HasExtension(embedded_proto_options_pb2.options):
             options = self.descriptor.options.Extensions[embedded_proto_options_pb2.options]
-            self.MaxLength = options.maxLength
-            self.NestedMaxLength = options.nestedMaxLength
+            
+            # Determine which maxLength to use based on context
+            # If we're in a repeated field, use nestedMaxLength, if not present create a C++ template parameter.
+            # If we're not in a repeated field, use maxLength, if not present create a C++ template parameter.
+            # Check if this field is part of a repeated field by looking at the parent's descriptor
+            is_in_repeated = proto_descriptor.label == FieldDescriptorProto.LABEL_REPEATED
 
-        # Determine which maxLength to use based on context
-        # If we're in a repeated field, use nestedMaxLength, if not present create a C++ template parameter.
-        # If we're not in a repeated field, use maxLength, if not present create a C++ template parameter.
-        # Check if this field is part of a repeated field by looking at the parent's descriptor
-        is_in_repeated = proto_descriptor.label == FieldDescriptorProto.LABEL_REPEATED
-
-        if is_in_repeated:
-            self.effective_max_length = self.NestedMaxLength
-        else:
-            self.effective_max_length = self.MaxLength
+            if is_in_repeated:
+                if options.nestedMaxLength:
+                    self.MaxLength = options.nestedMaxLength
+                else:
+                    self.MaxLength = None
+            else:
+                # For non-repeated fields, just use maxLength
+                self.MaxLength = options.maxLength
 
     def get_wire_type_str(self):
         return "LENGTH_DELIMITED"
@@ -281,13 +281,13 @@ class BaseStringBytes(Field):
     def get_template_parameters(self):
         result = []
         # When we do not have a maximum length specified add the length as a template param.
-        if not self.effective_max_length:
+        if not self.MaxLength:
             result.append({"name": self.template_param_str, "type": "uint32_t"})
         return result
 
     def register_template_parameters(self):
         # If we do not have a max length defined register the template parameter.
-        if not self.effective_max_length:
+        if not self.MaxLength:
             self.parent.register_child_with_template(self)
         return True
 
@@ -308,8 +308,8 @@ class FieldString(BaseStringBytes):
 
     def get_type(self):
         str_type = "::EmbeddedProto::FieldString<"
-        if self.effective_max_length:
-            str_type += str(self.effective_max_length) + ">"
+        if self.MaxLength:
+            str_type += str(self.MaxLength) + ">"
         else:
             str_type += self.template_param_str + ">"
         return str_type
@@ -330,8 +330,8 @@ class FieldBytes(BaseStringBytes):
 
     def get_type(self):
         str_type = "::EmbeddedProto::FieldBytes<"
-        if self.effective_max_length:
-            str_type += str(self.effective_max_length) + ">"
+        if self.MaxLength:
+            str_type += str(self.MaxLength) + ">"
         else:
             str_type += self.template_param_str + ">"
         return str_type
@@ -549,9 +549,14 @@ class FieldRepeated(Field):
         self.actual_type.match_field_with_definitions(all_types_definitions)
 
     def register_template_parameters(self):
+        # Check for the special case where a string or bytes field is nested in the repeated field.
+        string_or_bytes_field = (FieldDescriptorProto.TYPE_STRING == self.actual_type.descriptor.type) or \
+          (FieldDescriptorProto.TYPE_BYTES == self.actual_type.descriptor.type)
+        
         # If we do not have a max length defined register the template parameter.
-        if not self.MaxLength:
+        if not self.MaxLength or (string_or_bytes_field and not self.actual_type.MaxLength):
             self.parent.register_child_with_template(self)
+
         return True
 
     def render_get_set(self, jinja_env):
