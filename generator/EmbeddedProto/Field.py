@@ -549,6 +549,8 @@ class FieldRepeated(Field):
         self.actual_type.match_field_with_definitions(all_types_definitions)
 
     def register_template_parameters(self):
+        result = True
+        
         # Check for the special case where a string or bytes field is nested in the repeated field.
         string_or_bytes_field = (FieldDescriptorProto.TYPE_STRING == self.actual_type.descriptor.type) or \
           (FieldDescriptorProto.TYPE_BYTES == self.actual_type.descriptor.type)
@@ -557,7 +559,11 @@ class FieldRepeated(Field):
         if not self.MaxLength or (string_or_bytes_field and not self.actual_type.MaxLength):
             self.parent.register_child_with_template(self)
 
-        return True
+        # Check if field in the array is of a message type which might have template parameters.
+        elif FieldDescriptorProto.TYPE_MESSAGE == self.actual_type.descriptor.type:
+            result = self.actual_type.register_template_parameters()
+
+        return result
 
     def render_get_set(self, jinja_env):
         return self.render("FieldRepeated_GetSet.h", jinja_environment=jinja_env)
