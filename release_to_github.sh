@@ -39,6 +39,7 @@ else
   echo '  1. Update the pyproject.toml file?'
   echo '  2. Update the version in the README installation section?'
   echo '  3. Update the release notes?'
+  echo '  4. Update the Github workflow to test with the new version?'
   read answer
 
   if [ "$answer" != "${answer#[Yy]}" ] ;then   
