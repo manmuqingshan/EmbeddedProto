@@ -29,7 +29,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install gcovr
-      run: pip install gcovr==5.2
+      run: pip install gcovr==7.0
     - name: Setup venv
       run: python setup.py
     - name: Build test
