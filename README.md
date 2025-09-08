@@ -94,7 +94,7 @@ You can request more information about a commercial license on our [website](htt
 # Installation
 
 What is required to be able to generate source files based on .proto files:
-1. Python 3.8 and up
+1. Python 3.9 and up
 2. Pip
 3. Protobuf v32.0
 4. Git
