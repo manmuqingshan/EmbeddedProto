@@ -29,6 +29,7 @@ To stay up to date, signup for our [User Update](https://EmbeddedProto.com/signu
 
 ## 3.6.0
 * Update to Protobuf version 32.0.
+* Increated the minimum python version to 3.10.
 * Added EmbeddedProto options to allow setting the size of the string (or bytes) field in when it is also repeated, example: `repeated string str = 1 [(EmbeddedProto.options).maxLength = 3, (EmbeddedProto.options).nestedMaxLength = 10];`.
 
 ## 3.5.3 
@@ -94,7 +95,7 @@ You can request more information about a commercial license on our [website](htt
 # Installation
 
 What is required to be able to generate source files based on .proto files:
-1. Python 3.8 and up
+1. Python 3.10 and up
 2. Pip
 3. Protobuf v32.0
 4. Git
