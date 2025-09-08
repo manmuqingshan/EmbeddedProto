@@ -11,7 +11,7 @@ jobs:
   build-test:
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
         protoc-version: ["32.x"]
         python-version: ["3.8", "3.11"]
     runs-on: ${{ matrix.os }}
