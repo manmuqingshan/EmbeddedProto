@@ -4,7 +4,7 @@ authors = [
     {name = "Embedded AMS B.V.", email = "info@embeddedproto.com"},
 ]
 description = "EmbeddedProto generator"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = {text = "GPL-3.0-only"}
 classifiers = [ ]
 dependencies = [
