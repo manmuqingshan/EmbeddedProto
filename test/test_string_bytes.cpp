@@ -805,7 +805,7 @@ TEST(RepeatedStringBytes, field_number_to_name)
 
 TEST(RepeatedStringBytes, to_string)
 {
-  repeated_string_bytes<3, 15, 3, 15, 3, 3> msg;
+  repeated_string_bytes<3, 15, 3, 15, 4, 3> msg;
 
   ::EmbeddedProto::FieldString<15> field_str;
   msg.add_array_of_txt(field_str);

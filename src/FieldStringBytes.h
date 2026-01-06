@@ -346,6 +346,8 @@ namespace EmbeddedProto
           
           \param[in] rhs The c style string from which to take the characters and copy it to this object.
           \return A reference to this object used for function chaining.
+
+          \warning Please do not assign strings equal or larger than the defined MAX_LENTHG. The null terminator will get lost.
       */
       FieldString<MAX_LENGTH>& operator=(const char* const rhs)
       {
@@ -356,6 +358,7 @@ namespace EmbeddedProto
       //! Assign the data from the given c style string to this object.
       /*!
           \param[in] str The c style string from which to take the characters and copy it to this object.
+          \warning Please do not assign strings equal or larger than the defined MAX_LENTHG. The null terminator will get lost.
       */
       void set(const char* const str)
       {
