@@ -388,8 +388,9 @@ namespace EmbeddedProto
           if(0 < n_chars_used)
           {
             // Update the character pointer and characters left in the array.
-            left_chars.data += n_chars_used;
-            left_chars.size -= n_chars_used;
+            const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+            left_chars.data += actual_chars_used;
+            left_chars.size -= actual_chars_used;
           }
         }
 
@@ -404,8 +405,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used) 
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         return left_chars;
@@ -468,8 +470,9 @@ namespace EmbeddedProto
           if(0 < n_chars_used)
           {
             // Update the character pointer and characters left in the array.
-            left_chars.data += n_chars_used;
-            left_chars.size -= n_chars_used;
+            const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+            left_chars.data += actual_chars_used;
+            left_chars.size -= actual_chars_used;
           }
         }
 
@@ -484,8 +487,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used) 
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         uint32 field;
@@ -499,8 +503,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used)
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         return left_chars;

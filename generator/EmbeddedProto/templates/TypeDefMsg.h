@@ -326,8 +326,9 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
         if(0 < n_chars_used)
         {
           // Update the character pointer and characters left in the array.
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
       }
 
@@ -356,8 +357,9 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
       
       if(0 < n_chars_used)
       {
-        left_chars.data += n_chars_used;
-        left_chars.size -= n_chars_used;
+        const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+        left_chars.data += actual_chars_used;
+        left_chars.size -= actual_chars_used;
       }
 
       {% for field in typedef.fields %}
@@ -379,8 +381,9 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
 
       if(0 < n_chars_used)
       {
-        left_chars.data += n_chars_used;
-        left_chars.size -= n_chars_used;
+        const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+        left_chars.data += actual_chars_used;
+        left_chars.size -= actual_chars_used;
       }
 
       return left_chars;
