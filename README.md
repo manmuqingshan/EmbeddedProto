@@ -27,6 +27,12 @@ This document details the following:
 
 To stay up to date, signup for our [User Update](https://EmbeddedProto.com/signup).
 
+## 3.6.1
+* Backported the max_serialized_size() function from develop-v4
+* Added a saveguard around the output of the snprintf functions as is may not return the actual number of bytes writen.
+* Fix C++11 destroy_at declaration
+* Copyright year bump
+
 ## 3.6.0
 * Update to Protobuf version 32.0.
 * Increated the minimum python version to 3.10.
