@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2024 Embedded AMS B.V. - All Rights Reserved
+ *  Copyright (C) 2020-2026 Embedded AMS B.V. - All Rights Reserved
  *
  *  This file is part of Embedded Proto.
  *
@@ -80,6 +80,24 @@ namespace EmbeddedProto
         END_GROUP         = 4,  //!< Deprecated
         FIXED32           = 5,  //!< fixed32, sfixed32, float
       };
+
+      //! Calculate the number of bytes a varint value will take.
+      /*!
+        \param[in] value The value of which to calculate the size.
+        \return The number of bytes required for serializing the varint.
+      */
+      static constexpr uint32_t VarintSize(const uint64_t value)
+      {
+        return (value < (1ULL << 7)) ? 1 :
+           (value < (1ULL << 14)) ? 2 :
+           (value < (1ULL << 21)) ? 3 :
+           (value < (1ULL << 28)) ? 4 :
+           (value < (1ULL << 35)) ? 5 :
+           (value < (1ULL << 42)) ? 6 :
+           (value < (1ULL << 49)) ? 7 :
+           (value < (1ULL << 56)) ? 8 :
+           (value < (1ULL << 63)) ? 9 : 10;
+      }
 
       //! Encode a signed integer using the zig zag method
       /*!

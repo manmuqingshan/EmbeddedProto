@@ -1,5 +1,5 @@
 {#
-Copyright (C) 2020-2024 Embedded AMS B.V. - All Rights Reserved
+Copyright (C) 2020-2026 Embedded AMS B.V. - All Rights Reserved
 
 This file is part of Embedded Proto.
 
@@ -274,6 +274,39 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
 
 #endif
 
+    //! Calculate the maximum number of bytes required to serialize this type of message.
+    /*!
+      This function does not take into account a possible id of this message object is self.
+      \return The number of bytes required at most to serialize this message type.
+    */
+    static constexpr uint32_t max_serialized_size()
+    {
+      using namespace ::EmbeddedProto;
+      return
+        {% for field in typedef.fields %}
+          {{"+ " if not loop.first }}{{field.get_type()}}::max_serialized_size(static_cast<uint32_t>(FieldNumber::{{field.variable_id_name}}))
+        {% endfor %}
+        {% for oneof in typedef.oneofs %}
+          {{"+ " if not loop.first or typedef.fields|length != 0}}max_serialized_size_{{oneof.get_name()}}()
+        {% endfor %}
+        {% if typedef.fields|length == 0 and typedef.oneofs|length == 0 %}
+          0
+        {% endif %}
+        ;
+    }
+
+    //! Calculate the maximum number of bytes required to serialize this message including the field id number and tag.
+    /*!
+      \return The number of bytes required at most to serialize this message type.
+    */
+    static constexpr uint32_t max_serialized_size(const uint32_t field_number)
+    {
+      using namespace ::EmbeddedProto;
+      return WireFormatter::VarintSize(WireFormatter::MakeTag(field_number, WireFormatter::WireType::LENGTH_DELIMITED)) // Size of the tag
+        + WireFormatter::VarintSize(max_serialized_size()) // Length delimted value
+        + max_serialized_size(); // Length of the serialized content
+    }
+
 #ifdef MSG_TO_STRING
 
     ::EmbeddedProto::string_view to_string(::EmbeddedProto::string_view& str) const
@@ -293,8 +326,9 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
         if(0 < n_chars_used)
         {
           // Update the character pointer and characters left in the array.
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
       }
 
@@ -323,8 +357,9 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
       
       if(0 < n_chars_used)
       {
-        left_chars.data += n_chars_used;
-        left_chars.size -= n_chars_used;
+        const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+        left_chars.data += actual_chars_used;
+        left_chars.size -= actual_chars_used;
       }
 
       {% for field in typedef.fields %}
@@ -346,8 +381,9 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
 
       if(0 < n_chars_used)
       {
-        left_chars.data += n_chars_used;
-        left_chars.size -= n_chars_used;
+        const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+        left_chars.data += actual_chars_used;
+        left_chars.size -= actual_chars_used;
       }
 
       return left_chars;
@@ -421,6 +457,7 @@ class {{ typedef.get_name() }} final: public ::EmbeddedProto::MessageInterface
       {{ TypeOneof.init(oneof)|indent(6) }}
       {{ TypeOneof.clear(oneof)|indent(6) }}
       {{ TypeOneof.deserialize(oneof, environment)|indent(6) }}
+      {{ TypeOneof.max_serialized_size(oneof)|indent(6) }}
 #ifdef MSG_TO_STRING 
       {{ TypeOneof.to_string(oneof)|indent(6) }}
 #endif // End of MSG_TO_STRING

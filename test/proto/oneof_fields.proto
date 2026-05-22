@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2024 Embedded AMS B.V. - All Rights Reserved
+ *  Copyright (C) 2020-2026 Embedded AMS B.V. - All Rights Reserved
  *
  *  This file is part of Embedded Proto.
  *
@@ -16,7 +16,7 @@
  *  along with Embedded Proto. If not, see <https://www.gnu.org/licenses/>.
  *
  *  For commercial and closed source application please visit:
- *  <https://EmbeddedProto.com/license/>.
+ *  <https://embeddedproto.com/pricing/>.
  *
  *  Embedded AMS B.V.
  *  Info:
@@ -91,5 +91,20 @@ message string_bytes_oneof
   {
     string name = 1;
     bytes  data = 2;
+  }
+}
+
+message combined_oneof
+{
+  oneof combi
+  {
+    message_oneof msg_oneof = 1;
+    string_bytes_oneof msg_sb_oneof = 2;
+  }
+}
+
+message oneof_sigle {
+  oneof single_data {
+    int32 single_num = 1;
   }
 }

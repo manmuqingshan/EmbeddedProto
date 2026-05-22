@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2024 Embedded AMS B.V. - All Rights Reserved
+ *  Copyright (C) 2020-2026 Embedded AMS B.V. - All Rights Reserved
  *
  *  This file is part of Embedded Proto.
  *
@@ -263,7 +263,32 @@ namespace EmbeddedProto
         void clear() override 
         { 
           data_.fill(0);
-          current_length_ = 0; 
+          current_length_ = 0;
+        }
+
+        //! When serialized with the all elements set, how much bytes are then required.
+        /*!
+          This function takes into account the field number and tag combination.
+          \param[in] field_number We need to include the field number. This because large field numbers require more bytes.
+          \return The number of bytes required at most.
+        */
+        static constexpr uint32_t max_serialized_size(const uint32_t field_number)
+        {
+          return MAX_LENGTH // The number of bytes of the data.
+                  + WireFormatter::VarintSize(MAX_LENGTH) // The varint indicating the actual number of bytes.
+                  + WireFormatter::VarintSize(WireFormatter::MakeTag(field_number,
+                                                                     WireFormatter::WireType::LENGTH_DELIMITED)); // The field and tag comby
+        }
+
+        //! When serialized with the all elements set, how much bytes are then required.
+        /*!
+          This function is used when the field bytes or string is serialized packed. Think in a repeated field.
+          \return The number of bytes required at most.
+        */
+        static constexpr uint32_t max_serialized_size()
+        {
+          return MAX_LENGTH // The number of bytes of the data.
+                  + WireFormatter::VarintSize(MAX_LENGTH); // The varint indicating the actual number of bytes.
         }
        
       protected:
@@ -321,6 +346,8 @@ namespace EmbeddedProto
           
           \param[in] rhs The c style string from which to take the characters and copy it to this object.
           \return A reference to this object used for function chaining.
+
+          \warning Please do not assign strings equal or larger than the defined MAX_LENTHG. The null terminator will get lost.
       */
       FieldString<MAX_LENGTH>& operator=(const char* const rhs)
       {
@@ -331,6 +358,7 @@ namespace EmbeddedProto
       //! Assign the data from the given c style string to this object.
       /*!
           \param[in] str The c style string from which to take the characters and copy it to this object.
+          \warning Please do not assign strings equal or larger than the defined MAX_LENTHG. The null terminator will get lost.
       */
       void set(const char* const str)
       {
@@ -363,8 +391,9 @@ namespace EmbeddedProto
           if(0 < n_chars_used)
           {
             // Update the character pointer and characters left in the array.
-            left_chars.data += n_chars_used;
-            left_chars.size -= n_chars_used;
+            const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+            left_chars.data += actual_chars_used;
+            left_chars.size -= actual_chars_used;
           }
         }
 
@@ -379,8 +408,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used) 
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         return left_chars;
@@ -443,8 +473,9 @@ namespace EmbeddedProto
           if(0 < n_chars_used)
           {
             // Update the character pointer and characters left in the array.
-            left_chars.data += n_chars_used;
-            left_chars.size -= n_chars_used;
+            const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+            left_chars.data += actual_chars_used;
+            left_chars.size -= actual_chars_used;
           }
         }
 
@@ -459,8 +490,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used) 
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         uint32 field;
@@ -474,8 +506,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used)
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         return left_chars;

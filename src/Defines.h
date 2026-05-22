@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2024 Embedded AMS B.V. - All Rights Reserved
+ *  Copyright (C) 2020-2026 Embedded AMS B.V. - All Rights Reserved
  *
  *  This file is part of Embedded Proto.
  *
@@ -16,7 +16,7 @@
  *  along with Embedded Proto. If not, see <https://www.gnu.org/licenses/>.
  *
  *  For commercial and closed source application please visit:
- *  <https://EmbeddedProto.com/license/>.
+ *  <https://embeddedproto.com/pricing/>.
  *
  *  Embedded AMS B.V.
  *  Info:
@@ -61,7 +61,7 @@ namespace EmbeddedProto
 #elif __cplusplus >= 201103L // C++11
 
   template<class T>
-  constexpr void destroy_at(T* p) 
+  inline void destroy_at(T* p) 
   {
     p->~T(); 
   }
@@ -83,6 +83,17 @@ namespace EmbeddedProto
   using string_view = array_view<char>;
   using bytes_view = array_view<uint8_t>;
 
+  //! Simple max function as constexpr
+  constexpr uint32_t max(const uint32_t a, const uint32_t b)
+  {
+    return (a > b) ? a : b;
+  }
+
+  //! Simple min function as constexpr
+  constexpr uint32_t min(const uint32_t a, const uint32_t b)
+  {
+    return (a < b) ? a : b;
+  }
 }
 
 #endif //_EMBEDDED_PROTO_DEFINES_H_

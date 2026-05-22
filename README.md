@@ -4,7 +4,7 @@
 
 Embedded Proto is a product of Embedded AMS B.V. For more information about Embedded Proto please visit [EmbeddedProto.com](https://EmbeddedProto.com).
 
-Copyrights 2020-2024 Embedded AMS B.V., [www.EmbeddedAMS.nl](https://www.EmbeddedAMS.nl), [info@EmbeddedAMS.nl](mailto:info@EmbeddedAMS.nl)
+Copyright (C) 2020-2026 Embedded AMS, [www.EmbeddedAMS.nl](https://www.EmbeddedAMS.nl), [info@EmbeddedAMS.nl](mailto:info@EmbeddedAMS.nl)
 
 
 # Introduction
@@ -26,6 +26,12 @@ This document details the following:
 # What is new
 
 To stay up to date, signup for our [User Update](https://EmbeddedProto.com/signup).
+
+## 3.6.1
+* Backported the max_serialized_size() function from develop-v4
+* Added a saveguard around the output of the snprintf functions as is may not return the actual number of bytes writen.
+* Fix C++11 destroy_at declaration
+* Copyright year bump
 
 ## 3.6.0
 * Update to Protobuf version 32.0.

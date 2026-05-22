@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2024 Embedded AMS B.V. - All Rights Reserved
+ *  Copyright (C) 2020-2026 Embedded AMS B.V. - All Rights Reserved
  *
  *  This file is part of Embedded Proto.
  *
@@ -487,4 +487,23 @@ TEST(OneofField, to_string)
   EXPECT_EQ(str + TXT_LEN, str_left.data);
 }
 
+TEST(OneofField, to_string_buffer_overrun)
+{
+  message_oneof msg;
+
+  // X and V
+  msg.set_a(1);
+  msg.set_b(1);
+  msg.set_x(1);
+  msg.set_v(1);
+
+  constexpr uint32_t N = 10;
+  char str[N];
+  ::EmbeddedProto::string_view str_view = { str, N };
+
+  ::EmbeddedProto::string_view str_left = msg.to_string(str_view);
+
+  EXPECT_EQ(0, str_left.size);  
+  EXPECT_EQ(str + N, str_left.data);
+}
 #endif // End of MSG_TO_STRING

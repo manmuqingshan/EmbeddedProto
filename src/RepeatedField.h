@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2024 Embedded AMS B.V. - All Rights Reserved
+ *  Copyright (C) 2020-2026 Embedded AMS B.V. - All Rights Reserved
  *
  *  This file is part of Embedded Proto.
  *
@@ -55,19 +55,19 @@ namespace EmbeddedProto
     struct is_specialization_of_FieldTemplate : std::false_type {};
 
     //! Definition of a trait to check if DATA_TYPE is a specialization of the FieldTemplate.
-    template<Field::FieldTypes F, typename V, WireFormatter::WireType W>
-    struct is_specialization_of_FieldTemplate<::EmbeddedProto::FieldTemplate<F,V,W>> : std::true_type {};
+    template<Field::FieldTypes F, typename V, WireFormatter::WireType W, uint32_t S>
+    struct is_specialization_of_FieldTemplate<::EmbeddedProto::FieldTemplate<F,V,W,S>> : std::true_type {};
 
     //! This class only supports Field and FieldTemplate classes as template parameter.
     static_assert(std::is_base_of<::EmbeddedProto::Field, DATA_TYPE>::value || is_specialization_of_FieldTemplate<DATA_TYPE>::value, 
                   "A Field can only be used as template paramter.");
 
+    public:
+
     //! Check how this field shoeld be serialized, packed or not.
     static constexpr bool REPEATED_FIELD_IS_PACKED = 
           !(std::is_base_of<MessageInterface, DATA_TYPE>::value
             || std::is_base_of<internal::BaseStringBytes, DATA_TYPE>::value);
-
-    public:
 
       RepeatedField() = default;
       ~RepeatedField() override = default;
@@ -271,8 +271,9 @@ namespace EmbeddedProto
           if(0 < n_chars_used)
           {
             // Update the character pointer and characters left in the array.
-            left_chars.data += n_chars_used;
-            left_chars.size -= n_chars_used;
+            const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+            left_chars.data += actual_chars_used;
+            left_chars.size -= actual_chars_used;
           }
         }
 
@@ -280,8 +281,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used) 
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         for(uint32_t i = 0; i < this->get_length(); ++i)
@@ -293,8 +295,9 @@ namespace EmbeddedProto
         
         if(0 < n_chars_used)
         {
-          left_chars.data += n_chars_used;
-          left_chars.size -= n_chars_used;
+          const int32_t actual_chars_used = EmbeddedProto::min(n_chars_used, left_chars.size);
+          left_chars.data += actual_chars_used;
+          left_chars.size -= actual_chars_used;
         }
 
         return left_chars;
