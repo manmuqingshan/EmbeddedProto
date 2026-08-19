@@ -45,6 +45,7 @@ protoc --plugin=protoc-gen-eams=protoc-gen-eams -I./test/proto -I./generator --e
 protoc --plugin=protoc-gen-eams=protoc-gen-eams -I./test/proto --eams_out=./build/EAMS ./test/proto/empty_message.proto
 protoc --plugin=protoc-gen-eams=protoc-gen-eams -I./test/proto --eams_out=./build/EAMS ./test/proto/optional_fields.proto
 protoc --plugin=protoc-gen-eams=protoc-gen-eams -I./test/proto -I./generator --eams_out=./build/EAMS ./test/proto/field_options.proto
+protoc --plugin=protoc-gen-eams=protoc-gen-eams -I./test/proto --eams_out=./build/EAMS ./test/proto/custom_options.proto
 
 # For validation and testing generate the same message using python
 mkdir -p ./build/python
