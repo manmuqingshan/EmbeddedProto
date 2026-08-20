@@ -27,6 +27,11 @@ This document details the following:
 
 To stay up to date, signup for our [User Update](https://EmbeddedProto.com/signup).
 
+## 3.6.2
+* Fixed an error when a proto file imports `google/protobuf/descriptor.proto` to declare protoc custom options. No code is generated for that file anymore, it is only used by protoc and other plugins.
+* Fixed the retry loop registering template parameters, it could fail when messages spread over multiple files reference each other.
+* Improved the error messages reporting which file could not be processed.
+
 ## 3.6.1
 * Backported the max_serialized_size() function from develop-v4
 * Added a saveguard around the output of the snprintf functions as is may not return the actual number of bytes writen.
